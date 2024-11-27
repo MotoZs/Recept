@@ -17,14 +17,14 @@ namespace RecipeApp
             while (true)
             {
 
-                Console.WriteLine("\nMenu:");
-                Console.WriteLine($"{(int)Menu.ListRecipes}. List Recipes");
-                Console.WriteLine($"{(int)Menu.AddRecipe}. Add New Recipe");
-                Console.WriteLine($"{(int)Menu.AddRating}. Add Rating to a Recipe");
-                Console.WriteLine($"{(int)Menu.Exit}. Exit");
+                Console.WriteLine("\nVálassz:");
+                Console.WriteLine($"{(int)Menu.ListRecipes}. Receptek");
+                Console.WriteLine($"{(int)Menu.AddRecipe}. Új recept hozzáadása");
+                Console.WriteLine($"{(int)Menu.AddRating}. Értékelés");
+                Console.WriteLine($"{(int)Menu.Exit}. Kilépés");
 
 
-                Console.Write("Choose an option: ");
+                Console.Write("Válasz: ");
                 var input = Console.ReadLine();
                 var menu = Enum.Parse(typeof(Menu), input);
                 switch (menu)
@@ -42,7 +42,7 @@ namespace RecipeApp
                             Environment.Exit(0);
                             break;
                         default:
-                            Console.WriteLine("Invalid option. Try again.");
+                            Console.WriteLine("HIBA!");
                             break;
                 }
             }
@@ -59,12 +59,12 @@ namespace RecipeApp
 
             foreach (var recipe in recipes)
             {
-                Console.WriteLine($"\n{recipe.Title} by {recipe.Author.Name}");
-                Console.WriteLine($"Description: {recipe.Description}");
-                Console.WriteLine("Ingredients:");
+                Console.WriteLine($"\n{recipe.Title} | szerző: {recipe.Author.Name}");
+                Console.WriteLine($"Leírás: {recipe.Description}");
+                Console.WriteLine("Hozzávalók:");
                 foreach (var ingredient in recipe.Ingredients)
                     Console.WriteLine($" - {ingredient.Name}: {ingredient.Quantity}");
-                Console.WriteLine("Ratings:");
+                Console.WriteLine("Értékelés:");
                 foreach (var rating in recipe.Ratings)
                     Console.WriteLine($" - {rating.Score}/5: {rating.Comment}");
             }
@@ -72,15 +72,15 @@ namespace RecipeApp
 
         static void AddRecipe(RecipeDbContext context)
         {
-            Console.Write("Enter recipe title: ");
+            Console.Write("Add meg a nevét: ");
             var title = Console.ReadLine();
-            Console.Write("Enter recipe description: ");
+            Console.Write("Add meg a leírását: ");
             var description = Console.ReadLine();
 
-            Console.Write("Enter author ID: ");
+            Console.Write("Szerző ID-ja: ");
             if (!int.TryParse(Console.ReadLine(), out var authorId))
             {
-                Console.WriteLine("Invalid author ID.");
+                Console.WriteLine("Nincs ilyen szerző ID!");
                 return;
             }
 
@@ -91,14 +91,14 @@ namespace RecipeApp
                 AuthorId = authorId
             };
 
-            Console.Write("Enter number of ingredients: ");
+            Console.Write("Hány féle hozzávaló kell hozzá: ");
             if (int.TryParse(Console.ReadLine(), out var ingredientCount))
             {
                 for (int i = 0; i < ingredientCount; i++)
                 {
-                    Console.Write("Ingredient name: ");
+                    Console.Write("Miből: ");
                     var name = Console.ReadLine();
-                    Console.Write("Ingredient quantity: ");
+                    Console.Write("Mennyit: ");
                     var quantity = Console.ReadLine();
 
                     recipe.Ingredients.Add(new Ingredient { Name = name, Quantity = quantity });
@@ -107,26 +107,26 @@ namespace RecipeApp
 
             context.Recipes.Add(recipe);
             context.SaveChanges();
-            Console.WriteLine("Recipe added successfully!");
+            Console.WriteLine("Recept sikeresen hozzáadva!❤");
         }
 
         static void AddRating(RecipeDbContext context)
         {
-            Console.Write("Enter recipe ID: ");
+            Console.Write("Add meg a recept ID-ját: ");
             if (!int.TryParse(Console.ReadLine(), out var recipeId))
             {
-                Console.WriteLine("Invalid recipe ID.");
+                Console.WriteLine("Nincs ilyen recept ID!");
                 return;
             }
 
-            Console.Write("Enter rating (1-5): ");
+            Console.Write("Értékeld (1-5): ");
             if (!int.TryParse(Console.ReadLine(), out var score) || score < 1 || score > 5)
             {
-                Console.WriteLine("Invalid rating.");
+                Console.WriteLine("HIBÁS érték!");
                 return;
             }
 
-            Console.Write("Enter comment: ");
+            Console.Write("Komment: ");
             var comment = Console.ReadLine();
 
             var rating = new Rating
@@ -138,7 +138,7 @@ namespace RecipeApp
 
             context.Ratings.Add(rating);
             context.SaveChanges();
-            Console.WriteLine("Rating added successfully!");
+            Console.WriteLine("Értékelés sikeresen hozzáadva!😎");
         }
     }
 }

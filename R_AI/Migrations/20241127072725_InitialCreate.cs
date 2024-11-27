@@ -93,8 +93,8 @@ namespace RECEPT_kezelo.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "John Doe" },
-                    { 2, "Jane Smith" }
+                    { 1, "Bódis Bálint" },
+                    { 2, "Csíkos Marcell" }
                 });
 
             migrationBuilder.InsertData(

@@ -16,20 +16,20 @@ namespace RecipeApp.DbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Author>().HasData(
-                new Author { Id = 1, Name = "John Doe" },
-                new Author { Id = 2, Name = "Jane Smith" }
+                new Author { Id = 1, Name = "Bódis Bálint" },
+                new Author { Id = 2, Name = "Csíkos Marcell" }
             );
 
             modelBuilder.Entity<Recipe>().HasData(
-                new Recipe { Id = 1, Title = "Pancakes", Description = "Fluffy pancakes", AuthorId = 1 },
-                new Recipe { Id = 2, Title = "Spaghetti Bolognese", Description = "Classic Italian dish", AuthorId = 2 }
+                new Recipe { Id = 1, Title = "Marhapörkölt", Description = "A jó húsoknak ;)", AuthorId = 1 },
+                new Recipe { Id = 2, Title = "Túró rudi", Description = "Full eredeti", AuthorId = 2 }
             );
 
             modelBuilder.Entity<Ingredient>().HasData(
-                new Ingredient { Id = 1, Name = "Flour", Quantity = "200g", RecipeId = 1 },
-                new Ingredient { Id = 2, Name = "Eggs", Quantity = "2 pcs", RecipeId = 1 },
-                new Ingredient { Id = 3, Name = "Spaghetti", Quantity = "300g", RecipeId = 2 },
-                new Ingredient { Id = 4, Name = "Ground beef", Quantity = "400g", RecipeId = 2 }
+                new Ingredient { Id = 1, Name = "Túró", Quantity = "200g", RecipeId = 1 },
+                new Ingredient { Id = 2, Name = "Rudi", Quantity = "5 db", RecipeId = 1 },
+                new Ingredient { Id = 3, Name = "Tészta", Quantity = "300g", RecipeId = 2 },
+                new Ingredient { Id = 4, Name = "Marha hús", Quantity = "400g", RecipeId = 2 }
             );
         }
     }
