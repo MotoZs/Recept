@@ -1,53 +1,46 @@
-﻿using System;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RecipeApp.DbContext;
 using RecipeApp.Entities;
 using RecipeApp.Enums;
+using RecipeApp;
 
-namespace RecipeApp
-{
-    class Program
-    {
-        static void Main()
-        {
-            using var context = new RecipeDbContext();
-            context.Database.EnsureCreated();
+using var context = new RecipeDbContext();
+context.Database.EnsureCreated();
 
             while (true)
             {
-
                 Console.WriteLine("\nVálassz:");
                 Console.WriteLine($"{(int)Menu.ListRecipes}. Receptek");
                 Console.WriteLine($"{(int)Menu.AddRecipe}. Új recept hozzáadása");
                 Console.WriteLine($"{(int)Menu.AddRating}. Értékelés");
+                Console.WriteLine($"{(int)Menu.ReportTopRated}. TOP 3 riport");
                 Console.WriteLine($"{(int)Menu.Exit}. Kilépés");
-
 
                 Console.Write("Válasz: ");
                 var input = Console.ReadLine();
                 var menu = Enum.Parse(typeof(Menu), input);
                 switch (menu)
                 {
-                        case Menu.ListRecipes:
-                            ListRecipes(context);
-                            break;
-                        case Menu.AddRecipe:
-                            AddRecipe(context);
-                            break;
-                        case Menu.AddRating:
-                            AddRating(context);
-                            break;
-                        case Menu.Exit:
-                            Environment.Exit(0);
-                            break;
-                        default:
-                            Console.WriteLine("HIBA!");
-                            break;
+                    case Menu.ListRecipes:
+                        ListRecipes(context);
+                        break;
+                    case Menu.AddRecipe:
+                        AddRecipe(context);
+                        break;
+                    case Menu.AddRating:
+                        AddRating(context);
+                        break;
+                    case Menu.ReportTopRated:
+                        ReportTopRated(context);
+                        break;
+                    case Menu.Exit:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("HIBA!");
+                        break;
                 }
             }
-        }
-        
 
         static void ListRecipes(RecipeDbContext context)
         {
@@ -107,7 +100,7 @@ namespace RecipeApp
 
             context.Recipes.Add(recipe);
             context.SaveChanges();
-            Console.WriteLine("Recept sikeresen hozzáadva!❤");
+            Console.WriteLine("Recept sikeresen hozzáadva!");
         }
 
         static void AddRating(RecipeDbContext context)
@@ -138,7 +131,45 @@ namespace RecipeApp
 
             context.Ratings.Add(rating);
             context.SaveChanges();
-            Console.WriteLine("Értékelés sikeresen hozzáadva!😎");
+            Console.WriteLine("Értékelés sikeresen hozzáadva!");
         }
+
+        static void ReportTopRated(RecipeDbContext context)
+{
+    Console.WriteLine("\n--- TOP 3 Receptek ---");
+    var topRecipes = context.Recipes
+        .Include(r => r.Ratings)
+        .OrderByDescending(r => r.Ratings.Any() ? r.Ratings.Average(rt => rt.Score) : 0)
+        .Take(3)
+        .Select(r => new
+        {
+            r.Title,
+            AverageRating = r.Ratings.Any() ? r.Ratings.Average(rt => rt.Score) : 0
+        })
+        .ToList();
+
+    foreach (var recipe in topRecipes)
+    {
+        Console.WriteLine($"{recipe.Title} - Átlagos értékelés: {recipe.AverageRating:F2}");
+    }
+
+    Console.WriteLine("\n--- TOP 3 Szerzők ---");
+    var topAuthors = context.Authors
+        .Include(a => a.Recipes)
+        .ThenInclude(r => r.Ratings)
+        .Select(a => new
+        {
+            a.Name,
+            AverageRating = a.Recipes.Any() && a.Recipes.SelectMany(r => r.Ratings).Any()
+                ? a.Recipes.SelectMany(r => r.Ratings).Average(rt => rt.Score)
+                : 0
+        })
+        .OrderByDescending(a => a.AverageRating)
+        .Take(3)
+        .ToList();
+
+    foreach (var author in topAuthors)
+    {
+        Console.WriteLine($"{author.Name} - Átlagos értékelés: {author.AverageRating:F2}");
     }
 }

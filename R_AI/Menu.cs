@@ -5,6 +5,7 @@
         ListRecipes = 1,
         AddRecipe = 2,
         AddRating = 3,
-        Exit = 4
+        ReportTopRated = 4,
+        Exit = 5
     }
 }

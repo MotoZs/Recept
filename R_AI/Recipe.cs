@@ -7,7 +7,7 @@
         public string Description { get; set; }
         public int AuthorId { get; set; }
         public Author Author { get; set; }
-        public List<Ingredient> Ingredients { get; set; } = new();
-        public List<Rating> Ratings { get; set; } = new();
+        public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
+        public List<Rating> Ratings { get; set; } = new List<Rating>();
     }
 }
